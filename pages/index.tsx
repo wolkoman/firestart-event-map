@@ -18,7 +18,7 @@ export default function Home({nodes, edges, unconsumed}) {
         length: 50,
         arrow: "to"
       }))),
-    };
+    } as any;
     var network = new vis.Network(document.getElementById('network'), visData, {});
     network.on("selectNode", (data) => {
       const name = data.nodes[0];
