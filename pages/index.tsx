@@ -37,7 +37,7 @@ export default function Home({nodes, edges, unconsumed}) {
         <link rel="icon" href="/favicon.ico"/>
       </Head>
 
-      <main style={{display: "flex"}}>
+      <main style={{display: "flex", height: "calc(100vh -  20px)"}}>
         {info ? <div style={{width: 300}}>
           <h1>{info.name}</h1>
           <p>
@@ -49,7 +49,7 @@ export default function Home({nodes, edges, unconsumed}) {
             {info.consumes.map(x => <div>{x}</div>)}
           </p>
         </div> : null}
-        <div id="network" style={{width: '100%', height: 500}}/>
+        <div id="network" style={{width: '100%', height: "100%"}}/>
       </main>
     </div>
   );

@@ -7,7 +7,6 @@ export const data = async () => {
   const data = (await Promise.all(['produce', 'consume',].flatMap(async type => {
     const {items} = await fetchGitSearch(`${{produce: 'ProduceTopic', consume: 'ConsumeTopics'}[type]} user:${org}`);
     let mapped = items.map(result => ({repo: result.repository.name, path: result.path, type}));
-    console.log(mapped.length);
     return mapped;
   }))).flat();
 
@@ -15,8 +14,8 @@ export const data = async () => {
     let response = await fetchGitContent(org, d.repo, d.path);
     if (response.message) return null;
     let eventName = d.type === 'produce'
-      ? decode(response.content).match(/ProduceTopic => \"(.*?)\"/)
-      : decode(response.content).match(/ConsumeTopics => new\[\] \{\"(.*?)\"\}/);
+      ? decode(response.content).match(/ProduceTopic => "(.*?)"/)
+      : decode(response.content).match(/ConsumeTopics => new\[] {"(.*?)"}/);
     return {eventName, type: d.type, repo: d.repo};
   }))).filter(event => !!event).filter(event => !!event.eventName).map(event => ({...event, eventName: event.eventName[1]}));
 
@@ -25,8 +24,8 @@ export const data = async () => {
 
 const fetchGit = (path) => {
   return fetch(`https://api.github.com/${path}`, {
-    headers: {Authorization: `token fb36bd53e1cc7b8eb633b05f6f9aede1cd828501`}
-  }).then(x => x.json());
+    headers: {Authorization: `token ${process.env.GITHUB_TOKEN}`}
+  }).then(x => x.json()).catch(x => console.log("fail",x));
 }
 const fetchGitSearch = (query) => {
   return fetchGit(`search/code?q=${encodeURI(query)}`);
